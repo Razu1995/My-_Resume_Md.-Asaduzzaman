@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md. Asaduzzaman | Internal Audit & ERP Specialist</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#334e68',
+                            800: '#102a43',
+                            900: '#0b1b2b',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 24px;
+            bottom: 0;
+            width: 2px;
+            background: #cbd5e1;
+        }
+        .dark .timeline-line::before {
+            background: #334155;
+        }
+        /* Visual indicator when Live Editing Mode is enabled */
+        .editing-active [contenteditable="true"] {
+            outline: 2px dashed #3b82f6 !important;
+            outline-offset: 3px;
+            border-radius: 4px;
+            background-color: rgba(59, 130, 246, 0.05);
+            cursor: text;
+        }
+        .editing-active [contenteditable="true"]:hover {
+            background-color: rgba(59, 130, 246, 0.12);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-300">
+
+    <!-- Live Admin / Editor Control Bar (Hidden by default until authenticated) -->
+    <div id="editorToolbar" class="hidden bg-slate-900 text-white px-4 py-2.5 sticky top-0 z-50 border-b border-slate-700 shadow-xl flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-blue-400 font-bold uppercase tracking-wider">Owner Admin Mode Active</span>
+            <span class="text-slate-400 hidden sm:inline">| Click any text to edit instantly</span>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2">
+            <!-- Edit Mode Toggle Button -->
+            <button id="toggleEditBtn" onclick="toggleEditMode()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span id="editBtnText">Enable Text Editing</span>
+            </button>
+
+            <!-- Upload Photo Trigger -->
+            <button onclick="document.getElementById('photoFileInput').click()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md">
+                <i class="fa-solid fa-image"></i>
+                <span>Change Photo</span>
+            </button>
+            <input type="file" id="photoFileInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+
+            <!-- Upload Resume Trigger -->
+            <button onclick="document.getElementById('resumeFileInput').click()" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Upload Resume PDF</span>
+            </button>
+            <input type="file" id="resumeFileInput" accept=".pdf,.doc,.docx" class="hidden" onchange="handleResumeUpload(event)">
+
+            <!-- Save / Export HTML -->
+            <button onclick="exportModifiedHTML()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md" title="Download your edited portfolio file">
+                <i class="fa-solid fa-download"></i>
+                <span>Export HTML</span>
+            </button>
+
+            <!-- Reset Changes -->
+            <button onclick="resetPortfolioData()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-red-600/80 text-slate-300 hover:text-white transition-all" title="Reset all changes">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+
+            <!-- Logout Admin -->
+            <button onclick="logoutAdmin()" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 font-bold text-white transition-all flex items-center gap-1">
+                <i class="fa-solid fa-lock"></i>
+                <span>Lock & Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 md:top-11 z-40 glass-card transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-700 to-cyan-500 text-white flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+                    MA
+                </div>
+                <div>
+                    <span class="font-bold text-lg leading-tight block text-slate-900 dark:text-white" data-editable="brand-name">Md. Asaduzzaman</span>
+                    <span class="text-xs text-blue-600 dark:text-blue-400 font-medium" data-editable="brand-title">Internal Audit & ERP Specialist</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-6 text-sm font-medium">
+                <a href="#about" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About</a>
+                <a href="#competencies" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Competencies</a>
+                <a href="#experience" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Experience</a>
+                <a href="#simulator" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Audit Simulator</a>
+                <a href="#education" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Qualifications</a>
+                <a href="#contact" class="px-3 py-2 rounded-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
+            </nav>
+
+            <!-- Actions Right -->
+            <div class="flex items-center gap-3">
+                <!-- Dark Mode Toggle -->
+                <button id="themeToggle" class="p-2.5 rounded-xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors" title="Toggle Theme" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                </button>
+
+                <!-- CTA Button -->
+                <a href="mailto:asadujjamanraju25@gmail.com" class="hidden sm:inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                    <span>Hire Me</span>
+                </a>
+
+                <!-- Mobile menu toggle -->
+                <button id="mobileMenuBtn" class="md:hidden p-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800" aria-label="Open Mobile Menu">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 pt-3 pb-6 space-y-2">
+            <a href="#about" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800">About Profile</a>
+            <a href="#competencies" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800">Core Competencies</a>
+            <a href="#experience" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800">Experience Timeline</a>
+            <a href="#simulator" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-800">Audit Discrepancy Tool</a>
+            <a href="#education" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-800">Qualifications & Training</a>
+            <a href="#contact" class="block px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-800">Contact & References</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="about" class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left / Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span data-editable="seeking-badge">Seeking Role: Assistant Manager - Internal Audit</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        Hi, I'm <span class="gradient-text" data-editable="hero-name">Md. Asaduzzaman</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium" data-editable="hero-tagline">
+                        Senior Executive - Internal Audit & ERP Specialist with <span class="text-blue-600 dark:text-blue-400 font-semibold">6+ years</span> of multi-industry expertise across manufacturing, IT, and commercial governance.
+                    </p>
+
+                    <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-base" data-editable="hero-desc">
+                        Specialized in financial, operational, and compliance audits, import-export C&F bill verification, material reconciliation, ERP data analytics (Pride ERP, Power BI), and root-cause loss elimination.
+                    </p>
+
+                    <!-- Contact Quick Info -->
+                    <div class="pt-2 flex flex-wrap gap-4 justify-center lg:justify-start text-sm text-slate-600 dark:text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-blue-600 dark:text-blue-400"></i>
+                            <span data-editable="contact-location">Bottola, Khilkhet, Dhaka, Bangladesh</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400"></i>
+                            <a href="tel:+8801768079564" class="hover:underline" data-editable="contact-phone">+880 1768-079 564</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-blue-600 dark:text-blue-400"></i>
+                            <a href="mailto:asadujjamanraju25@gmail.com" class="hover:underline" data-editable="contact-email">asadujjamanraju25@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <!-- Call to Actions -->
+                    <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                        <a href="#contact" class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-500/25 transition-all hover:scale-105 flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <span>Get In Touch</span>
+                        </a>
+                        <button onclick="downloadResume()" class="px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-blue-600 dark:text-blue-400"></i>
+                            <span id="resumeBtnText">View / Download Resume</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hero Right / Photo Card & Metrics -->
+                <div class="lg:col-span-5 flex flex-col items-center">
+                    <div class="relative w-full max-w-sm">
+                        <!-- Decorative Backdrop Blur -->
+                        <div class="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl blur-lg opacity-30 dark:opacity-40"></div>
+                        
+                        <!-- Card Container -->
+                        <div class="relative glass-card rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-800 text-center group">
+                            <!-- Image Display with Hover Change Overlay -->
+                            <div class="relative w-48 h-48 mx-auto mb-5 rounded-full overflow-hidden ring-4 ring-blue-500/30 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center group/img">
+                                <img id="profileImage" src="https://placehold.co/400x400/102a43/ffffff?text=Md.+Asaduzzaman" alt="Md. Asaduzzaman" class="w-full h-full object-cover transition-opacity duration-300" onerror="this.onerror=null; this.src='https://placehold.co/400x400/102a43/ffffff?text=Asaduzzaman';">
+                                
+                                <div onclick="checkEditPermissionForPhoto()" class="absolute inset-0 bg-slate-900/70 text-white flex flex-col items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer p-2">
+                                    <i class="fa-solid fa-camera text-2xl mb-1 text-blue-400"></i>
+                                    <span class="text-xs font-bold">Change Photo</span>
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white" data-editable="card-name">Md. Asaduzzaman</h3>
+                            <p class="text-sm font-medium text-blue-600 dark:text-blue-400 mb-3" data-editable="card-title">Senior Executive - Internal Audit</p>
+                            
+                            <div class="inline-block px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 mb-4 border border-slate-200 dark:border-slate-700">
+                                <i class="fa-solid fa-building-user text-amber-500 mr-1.5"></i> <span data-editable="card-company">OMC Limited (Pvt.) Ltd.</span>
+                            </div>
+
+                            <!-- Stat Pills inside Hero Card -->
+                            <div class="grid grid-cols-2 gap-3 pt-2 text-left">
+                                <div class="bg-blue-50/70 dark:bg-slate-800/80 p-3 rounded-xl border border-blue-100 dark:border-slate-700">
+                                    <span class="block text-xl font-extrabold text-blue-700 dark:text-blue-400" data-editable="stat-exp-val">6+ Yrs</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-editable="stat-exp-lbl">Audit Experience</span>
+                                </div>
+                                <div class="bg-blue-50/70 dark:bg-slate-800/80 p-3 rounded-xl border border-blue-100 dark:border-slate-700">
+                                    <span class="block text-xl font-extrabold text-emerald-600 dark:text-emerald-400" data-editable="stat-logs-val">1,300+</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-editable="stat-logs-lbl">Monthly Logs Audited</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Impact & Metrics Banner -->
+    <section class="py-10 bg-slate-100 dark:bg-slate-800/50 border-y border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200/60 dark:border-slate-700">
+                    <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-1" data-editable="m-val-1">6+ Years</div>
+                    <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-editable="m-lbl-1">Internal Audit & Risk</div>
+                </div>
+                <div class="p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200/60 dark:border-slate-700">
+                    <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mb-1" data-editable="m-val-2">15+ Key</div>
+                    <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-editable="m-lbl-2">ERP Users Trained</div>
+                </div>
+                <div class="p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200/60 dark:border-slate-700">
+                    <div class="text-3xl font-extrabold text-amber-500 dark:text-amber-400 mb-1" data-editable="m-val-3">CMA (KL)</div>
+                    <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-editable="m-lbl-3">ICMAB Qualification</div>
+                </div>
+                <div class="p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200/60 dark:border-slate-700">
+                    <div class="text-3xl font-extrabold text-cyan-600 dark:text-cyan-400 mb-1" data-editable="m-val-4">4 Modules</div>
+                    <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-editable="m-lbl-4">Pride ERP Implementation</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Competencies & Skills -->
+    <section id="competencies" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Capabilities</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white" data-editable="comp-title">Core Competencies & Expertise</p>
+                <p class="mt-4 text-slate-600 dark:text-slate-400 text-sm sm:text-base" data-editable="comp-sub">
+                    Comprehensive audit controls, commercial bill verification, inventory governance, and ERP system integrations.
+                </p>
+            </div>
+
+            <!-- Grid of 4 Core Pillars -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Pillar 1 -->
+                <div class="glass-card rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xl mb-5">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3" data-editable="p1-title">Audit & Risk Management</h3>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span data-editable="p1-item-1">Internal Control Assessment & Risk Identification</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span data-editable="p1-item-2">Operational & Financial Audits</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span data-editable="p1-item-3">Root Cause Analysis & Action Planning</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span data-editable="p1-item-4">SOP Review, Compliance & Follow-up Reporting</span></li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-blue-600 dark:text-blue-400" data-editable="p1-tag">
+                        Governance & Internal Control
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="glass-card rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center text-xl mb-5">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3" data-editable="p2-title">Financial & Commercial Audit</h3>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span data-editable="p2-item-1">Import-Export C&F Bill Audit</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span data-editable="p2-item-2">Freight Forwarder & Courier Charges</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span data-editable="p2-item-3">Party Acceptance & Letter of Credit (LC) Review</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span data-editable="p2-item-4">Payroll, Settlements & Maternity Payments</span></li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400" data-editable="p2-tag">
+                        Cost Leakage Prevention
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="glass-card rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-300 flex items-center justify-center text-xl mb-5">
+                            <i class="fa-solid fa-industry"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3" data-editable="p3-title">Operational & Process Improvement</h3>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-amber-500 mt-0.5"></i><span data-editable="p3-item-1">Manufacturing Process & Yield Audit</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-amber-500 mt-0.5"></i><span data-editable="p3-item-2">Material Reconciliation & Overtime Control</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-amber-500 mt-0.5"></i><span data-editable="p3-item-3">Warehouse Stock Audit & Slow-Moving Stock</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-amber-500 mt-0.5"></i><span data-editable="p3-item-4">Utility & Fuel Consumption Analysis</span></li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-amber-600 dark:text-amber-400" data-editable="p3-tag">
+                        Operational Waste Reduction
+                    </div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="glass-card rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/60 text-cyan-600 dark:text-cyan-300 flex items-center justify-center text-xl mb-5">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3" data-editable="p4-title">Systems & Data Governance</h3>
+                        <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i><span data-editable="p4-item-1">ERP Implementation & Controls (Pride ERP)</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i><span data-editable="p4-item-2">Advanced MS Excel & Data Analytics</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i><span data-editable="p4-item-3">Power BI Dashboarding & Reporting</span></li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i><span data-editable="p4-item-4">Process Automation & Data Governance</span></li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-cyan-600 dark:text-cyan-400" data-editable="p4-tag">
+                        Tech-Driven Auditing
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Experience Section -->
+    <section id="experience" class="py-20 bg-slate-100/70 dark:bg-slate-800/40">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Track Record</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Professional Experience</p>
+                <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+                    6+ years of progressive growth across auditing, ERP implementation, and operational control.
+                </p>
+            </div>
+
+            <div class="relative timeline-line space-y-12">
+                
+                <!-- Role 1 -->
+                <div class="relative pl-10">
+                    <div class="absolute left-2 top-1.5 w-6 h-6 rounded-full bg-blue-600 border-4 border-slate-50 dark:border-slate-900 shadow-md"></div>
+                    
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 dark:border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300" data-editable="r1-dates">
+                                    May 2026 - Present
+                                </span>
+                                <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-2" data-editable="r1-title">Senior Executive - Internal Audit</h3>
+                                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400" data-editable="r1-company">Overseas Marketing Corporation (Pvt.) Ltd. (OMC Limited)</p>
+                            </div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 w-fit">
+                                <i class="fa-solid fa-briefcase text-slate-400 mr-1"></i> <span data-editable="r1-badge">Executive → Sr. Executive Promoted</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 italic" data-editable="r1-note">
+                            * Note: Served as Executive - Internal Audit from Nov 2025 to Apr 2026 prior to promotion.
+                        </p>
+
+                        <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                            <li data-editable="r1-bullet-1">Conduct internal audit assignments covering financial, operational, and compliance-related processes across factory operations.</li>
+                            <li data-editable="r1-bullet-2">Review and verify C&F agent bills, freight forwarder costs, and courier charges to identify overbilling, unsupported claims, and unnecessary expense leakage.</li>
+                            <li data-editable="r1-bullet-3">Review Party Acceptance and LC-related financial transactions for compliance with internal procedures and banking requirements.</li>
+                            <li data-editable="r1-bullet-4">Verify monthly salary sheets, final settlements, maternity payments, and operational expense vouchers for accuracy and supporting documentation.</li>
+                            <li data-editable="r1-bullet-5">Review local purchase bills and verify goods receipt and inventory records to identify discrepancies.</li>
+                            <li data-editable="r1-bullet-6">Prepare audit observations and actionable recommendations and coordinate with relevant departments to resolve control weaknesses.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Role 2 -->
+                <div class="relative pl-10">
+                    <div class="absolute left-2 top-1.5 w-6 h-6 rounded-full bg-slate-400 border-4 border-slate-50 dark:border-slate-900 shadow-md"></div>
+                    
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 dark:border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300" data-editable="r2-dates">
+                                    Jul 2024 - Oct 2025
+                                </span>
+                                <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-2" data-editable="r2-title">Executive - Internal Audit</h3>
+                                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400" data-editable="r2-company">Meghna Executive Holdings Ltd.</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                            <li data-editable="r2-bullet-1">Executed regular and special operational and financial audit assignments based on management requirements.</li>
+                            <li data-editable="r2-bullet-2">Reviewed cash books, general ledgers, and transaction records to assess accuracy, compliance, and adherence to company policies.</li>
+                            <li data-editable="r2-bullet-3">Verified factory payroll, maternity payments, and final settlements and conducted periodic physical inventory audits and stock reconciliations.</li>
+                            <li data-editable="r2-bullet-4">Prepared audit checklists and formal audit reports, evaluating internal compliance against corporate policy and regulatory mandates.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Role 3 -->
+                <div class="relative pl-10">
+                    <div class="absolute left-2 top-1.5 w-6 h-6 rounded-full bg-slate-400 border-4 border-slate-50 dark:border-slate-900 shadow-md"></div>
+                    
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 dark:border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300" data-editable="r3-dates">
+                                    May 2023 - Jun 2024
+                                </span>
+                                <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-2" data-editable="r3-title">Jr. Business Consultant</h3>
+                                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400" data-editable="r3-company">Pridesys IT Ltd.</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                            <li data-editable="r3-bullet-1">Supported Pride ERP implementation across Merchandising, Inventory, Chemical Store, and Production modules, training 15+ key end-users.</li>
+                            <li data-editable="r3-bullet-2">Reviewed real-time factory floor data against physical output and supported resolution of receive-delivery quantity mismatches to improve reporting accuracy.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Role 4 -->
+                <div class="relative pl-10">
+                    <div class="absolute left-2 top-1.5 w-6 h-6 rounded-full bg-slate-400 border-4 border-slate-50 dark:border-slate-900 shadow-md"></div>
+                    
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 dark:border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300" data-editable="r4-dates">
+                                    Apr 2020 - May 2022
+                                </span>
+                                <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-2" data-editable="r4-title">Coordinator - Dyeing & Finishing</h3>
+                                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400" data-editable="r4-company">Beximco Knitting Ltd.</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                            <li data-editable="r4-bullet-1">Managed approximately 1,300 operational entries per month with high data integrity in organizational systems.</li>
+                            <li data-editable="r4-bullet-2">Applied root-cause analysis to improve body fabric-to-collar/cuff output ratios and identified opportunities to reduce material waste and utilization errors.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Achievements & Audit Wins -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Quantifiable Value</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Audit Achievements & Process Improvements</p>
+                <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+                    Examples of key control weaknesses detected, cost leakages plugged, and process enhancements introduced.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-ship"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach1-title">Detention & Demurrage Containment</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach1-desc">
+                        Investigated detention and demurrage expenses and reviewed operational and documentation-related causes, including CFS space constraints, vehicle volume, labor shortages, and bond-license bottlenecks.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-magnifying-glass-dollar"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach2-title">MRR/GRPO vs. Challan Discrepancy Detection</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach2-desc">
+                        Detected quantity and value mismatches between MRR/GRPO and Challan records in export-related transactions and quantified discrepancies for direct management review.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach3-title">Purchase Shortage & Physical Reconciliation</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach3-desc">
+                        Identified local purchase quantity shortages by comparing purchase records with receiving logs and physical count verification at factory sites.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach4-title">OT & Production Efficiency Oversight</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach4-desc">
+                        Reviewed production, overtime, and shipment data to support management monitoring of operational efficiency, labor productivity, and cost control.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-gas-pump"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach5-title">Utility & Energy Consumption Planning</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach5-desc">
+                        Analyzed gas and fuel consumption metrics against production output, highlighting potential opportunities for improved utility planning and cost savings.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-10 h-10 rounded-lg bg-cyan-100 text-cyan-600 dark:bg-cyan-900/50 dark:text-cyan-300 flex items-center justify-center font-bold text-lg mb-4">
+                        <i class="fa-solid fa-warehouse"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-slate-900 dark:text-white mb-2" data-editable="ach6-title">Warehouse & Dead-Stock Optimization</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-editable="ach6-desc">
+                        Reviewed warehouse closing inventory controls and emphasized stock reconciliation, traceability, and identification of slow-moving or dead stock.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Audit Discrepancy & Risk Simulator -->
+    <section id="simulator" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
+                    Interactive Demonstration
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-3">Audit Discrepancy & Risk Simulator</h2>
+                <p class="mt-2 text-slate-400 text-sm sm:text-base">
+                    Simulate how Md. Asaduzzaman detects bill overcharges, MRR quantity variances, and demurrage risks using structured audit rules.
+                </p>
+            </div>
+
+            <div class="max-w-4xl mx-auto glass-card border border-slate-800 rounded-3xl p-6 sm:p-10 text-slate-100 bg-slate-800/80 shadow-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Form Controls -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders"></i> Audit Inputs
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Select Audit Verification Scenario</label>
+                            <select id="simScenario" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
+                                <option value="cf_bill">C&F / Freight Forwarder Invoice vs Contract</option>
+                                <option value="grpo_mrr">GRPO / MRR vs Delivery Challan Quantity</option>
+                                <option value="fuel_consumption">Utility & Fuel vs Machine Hours</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1" id="labelVal1">Billed Amount (BDT)</label>
+                                <input type="number" id="simVal1" value="450000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1" id="labelVal2">Approved SOP Limit (BDT)</label>
+                                <input type="number" id="simVal2" value="380000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Documentation Status</label>
+                            <select id="simDocs" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
+                                <option value="complete">Complete Supporting Docs (Gate Pass, Challan, Approval)</option>
+                                <option value="missing_approval">Missing Secondary Management Sign-off</option>
+                                <option value="incomplete">Missing Physical Receiving Proof</option>
+                            </select>
+                        </div>
+
+                        <button onclick="runAuditSimulation()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-blue-600/30 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Run Audit Analysis
+                        </button>
+                    </div>
+
+                    <!-- Output Dashboard -->
+                    <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Audit Evaluation Result</span>
+                                <span id="riskBadge" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">
+                                    HIGH RISK
+                                </span>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="text-xs text-slate-400 block mb-1">Quantified Expense Discrepancy</span>
+                                <div id="discrepancyVal" class="text-3xl font-extrabold text-amber-400">BDT 70,000</div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-xs font-semibold text-slate-300 block mb-1">Root Cause Diagnosis:</span>
+                                    <p id="rootCauseText" class="text-xs text-slate-400 leading-relaxed">
+                                        Claimed freight charge exceeds negotiated vendor contract rates by 18.4%. Lack of gate entry verification attached.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <span class="text-xs font-semibold text-slate-300 block mb-1">Recommended Action:</span>
+                                    <p id="recommendationText" class="text-xs text-slate-400 leading-relaxed">
+                                        Hold payment voucher. Issue discrepancy notice to C&F agent requiring revised bill alignment with agreed tariff schedule.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-500 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-blue-400"></i>
+                            <span>Logic based on standard internal control frameworks (ICMAB & IIA compliance guidelines).</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education & Qualifications -->
+    <section id="education" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Qualifications</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Education & Professional Training</p>
+                <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+                    Combining academic accounting excellence with continuous executive learning.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Professional Qualification & Academic -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+                        <i class="fa-solid fa-graduation-cap text-blue-600 dark:text-blue-400"></i> Academic & Professional Credentials
+                    </h3>
+
+                    <!-- Professional CMA -->
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-500 border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-extrabold text-slate-900 dark:text-white text-base" data-editable="edu1-title">Cost and Management Accounting (CMA)</h4>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300" data-editable="edu1-badge">
+                                Correspondence
+                            </span>
+                        </div>
+                        <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1" data-editable="edu1-sub">Knowledge Level (KL)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="edu1-inst">Institute of Cost and Management Accountants of Bangladesh (ICMAB), Dhaka.</p>
+                    </div>
+
+                    <!-- MBA -->
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-l-blue-600 border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base" data-editable="edu2-title">Master of Business Administration (MBA)</h4>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400" data-editable="edu2-year">2021</span>
+                        </div>
+                        <p class="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1" data-editable="edu2-cgpa">Major: Accounting | CGPA: 2.75 / 4.00</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="edu2-inst">National University, Bangladesh</p>
+                    </div>
+
+                    <!-- BBA -->
+                    <div class="glass-card rounded-2xl p-6 border-l-4 border-l-blue-600 border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base" data-editable="edu3-title">Bachelor of Business Administration (BBA)</h4>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400" data-editable="edu3-year">2019</span>
+                        </div>
+                        <p class="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1" data-editable="edu3-cgpa">Major: Accounting | CGPA: 2.72 / 4.00</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="edu3-inst">National University, Bangladesh</p>
+                    </div>
+
+                    <!-- HSC & SSC -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
+                            <h5 class="font-bold text-xs text-slate-900 dark:text-white" data-editable="hsc-title">HSC - Business Studies</h5>
+                            <p class="text-[11px] text-blue-600 dark:text-blue-400" data-editable="hsc-score">GPA: 4.40 / 5.00 (2014)</p>
+                            <p class="text-[11px] text-slate-500" data-editable="hsc-inst">Govt. Ashek Mahmud College</p>
+                        </div>
+                        <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
+                            <h5 class="font-bold text-xs text-slate-900 dark:text-white" data-editable="ssc-title">SSC - Business Studies</h5>
+                            <p class="text-[11px] text-emerald-600 dark:text-emerald-400" data-editable="ssc-score">GPA: 5.00 / 5.00 (2012)</p>
+                            <p class="text-[11px] text-slate-500" data-editable="ssc-inst">Jamalpur Zilla School</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specialized Training & Workshops -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+                        <i class="fa-solid fa-certificate text-blue-600 dark:text-blue-400"></i> Executive Certifications & Workshops
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-sm text-slate-900 dark:text-white" data-editable="tr1-title">Professional Internal Auditor (PIA)</span>
+                                <span class="text-[11px] font-semibold text-blue-600 dark:text-blue-400" data-editable="tr1-dur">3-Month Program (2026)</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2" data-editable="tr1-org">SYNERGY CONSULTING</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800" data-editable="tr1-desc">
+                                Trainer: Mohammad Zulfiqur Haider, CA & CMA (Intr.), PGD-BUFT, CBSI-IBA, DU (GM - Internal Audit, Pretty Group).
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-sm text-slate-900 dark:text-white" data-editable="tr2-title">Standards to Assurance: IFRS S1, S2 & IFRS 18</span>
+                                <span class="text-[11px] font-semibold text-blue-600 dark:text-blue-400" data-editable="tr2-dur">IIAB Workshop</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2" data-editable="tr2-org">The Institute of Internal Auditors Bangladesh (IIAB)</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800" data-editable="tr2-desc">
+                                Trainer: Prashanta Shaha, FCA, CFFP, AIBB (Head of Internal Audit, BRAC).
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-sm text-slate-900 dark:text-white" data-editable="tr3-title">Practical Accounting Workshop 2025</span>
+                                <span class="text-[11px] font-semibold text-blue-600 dark:text-blue-400" data-editable="tr3-dur">LSF & Company</span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800" data-editable="tr3-desc">
+                                Trainer: H. M. Mainuddin Ahammed FCMA (CFO, Knit Concern Group).
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-gradient-to-r from-blue-900 to-indigo-950 text-white shadow-md">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fa-solid fa-award text-amber-400 text-xl"></i>
+                                <div>
+                                    <h5 class="font-bold text-xs" data-editable="cfo-title">CFO365 Academy & Advisory - Member #90535</h5>
+                                    <span class="text-[11px] text-blue-200" data-editable="cfo-time">Daily Growth Model Practice (06:00 AM - 07:00 AM)</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed" data-editable="cfo-desc">
+                                Active daily focus on Tax/VAT compliance, Cash-flow forecasting, Cost/Wastage variance analysis, and month-end closing frameworks.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- References Section -->
+    <section class="py-16 bg-slate-100/70 dark:bg-slate-800/40 border-y border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Endorsements</h2>
+                <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Professional References</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- Ref 1 -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
+                            HM
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 dark:text-white text-base" data-editable="ref1-name">H M Mainuddin Ahammed FCMA</h4>
+                            <p class="text-xs font-semibold text-blue-600 dark:text-blue-400" data-editable="ref1-title">Chief Financial Officer (CFO)</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="ref1-org">Knit Concern Group</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-blue-500 w-4"></i>
+                            <a href="tel:+8801730000113" class="hover:underline" data-editable="ref1-phone">+880 1730-000113</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-blue-500 w-4"></i>
+                            <a href="mailto:cfo@knitconcern.com" class="hover:underline" data-editable="ref1-email">cfo@knitconcern.com</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ref 2 -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-lg">
+                            MZ
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 dark:text-white text-base" data-editable="ref2-name">Mohammad Zulfiqur Haider</h4>
+                            <p class="text-xs font-semibold text-blue-600 dark:text-blue-400" data-editable="ref2-title">General Manager - Internal Audit</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="ref2-org">Pretty Group</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-blue-500 w-4"></i>
+                            <a href="tel:+8801726508682" class="hover:underline" data-editable="ref2-phone">+880 1726-508682</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-blue-500 w-4"></i>
+                            <a href="mailto:gm.audit@prettygroupbd.com" class="hover:underline" data-editable="ref2-email">gm.audit@prettygroupbd.com</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">Connect</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Get In Touch</p>
+                <p class="mt-3 text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+                    Available for Assistant Manager - Internal Audit roles, consulting inquiries, or professional networking.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Email Address</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Direct response within 24 hours</p>
+                            <button onclick="copyToClipboard('asadujjamanraju25@gmail.com')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5">
+                                <span data-editable="c-email-val">asadujjamanraju25@gmail.com</span>
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Phone Contact</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Call or WhatsApp</p>
+                            <a href="tel:+8801768079564" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline" data-editable="c-phone-val">
+                                +880 1768-079 564
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm">Current Address</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" data-editable="c-addr-val">Bottola, Khilkhet, Dhaka, Bangladesh</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="glass-card rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-md">
+                        <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Name *</label>
+                                    <input type="text" required placeholder="e.g. Hiring Manager" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Email *</label>
+                                    <input type="email" required placeholder="manager@company.com" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
+                                <input type="text" placeholder="Assistant Manager Internal Audit Position Inquiry" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Message *</label>
+                                <textarea rows="4" required placeholder="Write your message or role details here..." class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-blue-500/20 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+
+                        <div id="formSuccessMessage" class="hidden mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs text-center font-medium">
+                            <i class="fa-solid fa-circle-check text-base mr-1.5"></i> Thank you! Your message simulation has been received. Md. Asaduzzaman will get back to you shortly.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="text-white font-bold text-sm block" data-editable="footer-name">Md. Asaduzzaman</span>
+                <span data-editable="footer-title">Senior Executive - Internal Audit & ERP Professional</span>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="#about" class="hover:text-white transition-colors">About</a>
+                <a href="#competencies" class="hover:text-white transition-colors">Competencies</a>
+                <a href="#experience" class="hover:text-white transition-colors">Experience</a>
+                <a href="#education" class="hover:text-white transition-colors">Qualifications</a>
+            </div>
+
+            <div class="text-center md:text-right">
+                <p>&copy; 2026 Md. Asaduzzaman. All rights reserved.</p>
+                <p class="text-[11px] text-slate-500 mt-0.5" data-editable="footer-location">Bottola, Khilkhet, Dhaka, Bangladesh</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three-Dot Floating Admin Button (Bottom Right Corner) -->
+    <button onclick="openAdminModal()" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-2xl flex items-center justify-center hover:bg-blue-600 transition-all border border-slate-700 hover:scale-105 group" title="Owner Admin Login">
+        <i class="fa-solid fa-ellipsis-vertical text-lg group-hover:rotate-90 transition-transform"></i>
+    </button>
+
+    <!-- Password / Admin Management Modal -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Login View -->
+            <div id="loginView">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 text-xl font-bold shadow-inner">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Owner Authorization</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter your password to unlock portfolio editing tools.</p>
+                </div>
+
+                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Admin Password</label>
+                        <input type="password" id="adminPasswordInput" required placeholder="Enter password" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-blue-600/30 text-xs uppercase tracking-wider">
+                        Authenticate & Unlock Editor
+                    </button>
+                </form>
+
+                <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Default: <code class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-blue-500 font-bold">Asad@2026</code></span>
+                    <button type="button" onclick="switchToChangePasswordFromLogin()" class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">Change Password?</button>
+                </div>
+            </div>
+
+            <!-- Change Password View -->
+            <div id="changePasswordView" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400 flex items-center justify-center mx-auto mb-3 text-xl font-bold shadow-inner">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Change Admin Password</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Update your secure portfolio admin password.</p>
+                </div>
+
+                <form onsubmit="handlePasswordChange(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Current Password</label>
+                        <input type="password" id="currentPasswordInput" required placeholder="Enter current password" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">New Password</label>
+                        <input type="password" id="newPasswordInput" required placeholder="Enter new password" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Confirm New Password</label>
+                        <input type="password" id="confirmPasswordInput" required placeholder="Confirm new password" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-amber-600/30 text-xs uppercase tracking-wider">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+                    <button type="button" onclick="switchToLoginView()" class="text-xs text-slate-500 dark:text-slate-400 hover:underline">&larr; Back to Login</button>
+                </div>
+            </div>
+
+            <!-- Admin Menu View (when already authenticated) -->
+            <div id="adminMenuView" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3 text-xl font-bold shadow-inner">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Admin Management</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Session active. Choose an action below.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="switchToChangePasswordFromMenu()" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold py-3 px-4 rounded-xl transition-all text-xs flex items-center justify-between border border-slate-200 dark:border-slate-700">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-key text-amber-500"></i> Change Password</span>
+                        <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                    </button>
+                    <button onclick="logoutAdmin(); closeAdminModal();" class="w-full bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-bold py-3 px-4 rounded-xl transition-all text-xs flex items-center justify-between border border-red-200 dark:border-red-900/50">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-lock"></i> Lock & Logout Session</span>
+                        <i class="fa-solid fa-chevron-right text-red-400"></i>
+                    </button>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+                    <button onclick="closeAdminModal()" class="text-xs text-slate-500 dark:text-slate-400 hover:underline">Close Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store state for custom user uploaded files and auth
+        let uploadedResumeData = null;
+        let isEditMode = false;
+
+        // Get current admin password from localStorage or default
+        function getAdminPassword() {
+            return localStorage.getItem('asaduzzaman_admin_password') || 'Asad@2026';
+        }
+
+        // On Load: Load any saved user edits and check auth session
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedEdits();
+            checkAdminSession();
+        });
+
+        // Open/Close Admin Modal with View Switcher
+        function openAdminModal() {
+            const isAuth = sessionStorage.getItem('asaduzzaman_admin_auth') === 'true';
+            
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').classList.add('flex');
+
+            if (isAuth) {
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('changePasswordView').classList.add('hidden');
+                document.getElementById('adminMenuView').classList.remove('hidden');
+            } else {
+                document.getElementById('adminMenuView').classList.add('hidden');
+                document.getElementById('changePasswordView').classList.add('hidden');
+                document.getElementById('loginView').classList.remove('hidden');
+                document.getElementById('adminPasswordInput').value = '';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('flex');
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function switchToChangePasswordFromLogin() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('adminMenuView').classList.add('hidden');
+            document.getElementById('changePasswordView').classList.remove('hidden');
+            document.getElementById('currentPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('confirmPasswordInput').value = '';
+            document.getElementById('currentPasswordInput').focus();
+        }
+
+        function switchToChangePasswordFromMenu() {
+            document.getElementById('adminMenuView').classList.add('hidden');
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('changePasswordView').classList.remove('hidden');
+            document.getElementById('currentPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('confirmPasswordInput').value = '';
+            document.getElementById('currentPasswordInput').focus();
+        }
+
+        function switchToLoginView() {
+            document.getElementById('changePasswordView').classList.add('hidden');
+            document.getElementById('adminMenuView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminPasswordInput').focus();
+        }
+
+        // Handle Admin Login Submission
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pwd = document.getElementById('adminPasswordInput').value;
+            const currentPass = getAdminPassword();
+            if (pwd === currentPass) {
+                sessionStorage.setItem('asaduzzaman_admin_auth', 'true');
+                closeAdminModal();
+                showToolbar();
+                showToast('Successfully authenticated! Editor toolbar enabled.');
+            } else {
+                showToast('Incorrect password! Access denied.');
+                document.getElementById('adminPasswordInput').value = '';
+            }
+        }
+
+        // Handle Password Change Submission
+        function handlePasswordChange(e) {
+            e.preventDefault();
+            const currentInput = document.getElementById('currentPasswordInput').value;
+            const newInput = document.getElementById('newPasswordInput').value;
+            const confirmInput = document.getElementById('confirmPasswordInput').value;
+            const currentStored = getAdminPassword();
+
+            if (currentInput !== currentStored) {
+                showToast('Current password incorrect!');
+                document.getElementById('currentPasswordInput').value = '';
+                return;
+            }
+
+            if (newInput.length < 4) {
+                showToast('New password must be at least 4 characters long.');
+                return;
+            }
+
+            if (newInput !== confirmInput) {
+                showToast('New passwords do not match!');
+                document.getElementById('confirmPasswordInput').value = '';
+                return;
+            }
+
+            localStorage.setItem('asaduzzaman_admin_password', newInput);
+            showToast('Admin password updated successfully!');
+            closeAdminModal();
+        }
+
+        function showToolbar() {
+            document.getElementById('editorToolbar').classList.remove('hidden');
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('asaduzzaman_admin_auth');
+            if (isEditMode) {
+                toggleEditMode();
+            }
+            document.getElementById('editorToolbar').classList.add('hidden');
+            showToast('Logged out successfully. Editing tools locked.');
+        }
+
+        function checkAdminSession() {
+            if (sessionStorage.getItem('asaduzzaman_admin_auth') === 'true') {
+                showToolbar();
+            }
+        }
+
+        function checkEditPermissionForPhoto() {
+            if (sessionStorage.getItem('asaduzzaman_admin_auth') === 'true') {
+                document.getElementById('photoFileInput').click();
+            } else {
+                openAdminModal();
+                showToast('Please login as owner to change photo.');
+            }
+        }
+
+        // Toggle Live Edit Mode
+        function toggleEditMode() {
+            if (sessionStorage.getItem('asaduzzaman_admin_auth') !== 'true') {
+                openAdminModal();
+                return;
+            }
+
+            isEditMode = !isEditMode;
+            const body = document.body;
+            const btnText = document.getElementById('editBtnText');
+            const toggleBtn = document.getElementById('toggleEditBtn');
+            const editables = document.querySelectorAll('[data-editable]');
+
+            if (isEditMode) {
+                body.classList.add('editing-active');
+                btnText.innerText = 'Save & Lock Edits';
+                toggleBtn.className = 'px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md';
+                
+                editables.forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                    el.addEventListener('blur', saveEditsToLocalStorage);
+                });
+                showToast('Edit Mode Enabled! Click any text to customize directly.');
+            } else {
+                body.classList.remove('editing-active');
+                btnText.innerText = 'Enable Text Editing';
+                toggleBtn.className = 'px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-bold text-white transition-all flex items-center gap-1.5 shadow-md';
+                
+                editables.forEach(el => {
+                    el.removeAttribute('contenteditable');
+                });
+                saveEditsToLocalStorage();
+                showToast('Edits Saved Successfully!');
+            }
+        }
+
+        // Save ContentEditable text to localStorage
+        function saveEditsToLocalStorage() {
+            const editables = document.querySelectorAll('[data-editable]');
+            const savedData = {};
+            editables.forEach(el => {
+                const key = el.getAttribute('data-editable');
+                savedData[key] = el.innerHTML;
+            });
+            localStorage.setItem('asaduzzaman_portfolio_edits', JSON.stringify(savedData));
+        }
+
+        // Restore saved edits on load
+        function loadSavedEdits() {
+            const savedStr = localStorage.getItem('asaduzzaman_portfolio_edits');
+            if (savedStr) {
+                try {
+                    const savedData = JSON.parse(savedStr);
+                    Object.keys(savedData).forEach(key => {
+                        const el = document.querySelector(`[data-editable="${key}"]`);
+                        if (el) {
+                            el.innerHTML = savedData[key];
+                        }
+                    });
+                } catch(e) {
+                    console.error('Error loading stored portfolio data:', e);
+                }
+            }
+
+            // Restore Profile Image
+            const savedPhoto = localStorage.getItem('asaduzzaman_profile_photo');
+            if (savedPhoto) {
+                document.getElementById('profileImage').src = savedPhoto;
+            }
+
+            // Restore Resume File
+            const savedResume = localStorage.getItem('asaduzzaman_resume_file');
+            if (savedResume) {
+                uploadedResumeData = JSON.parse(savedResume);
+                document.getElementById('resumeBtnText').innerText = 'Download Custom Resume (' + uploadedResumeData.fileName + ')';
+            }
+        }
+
+        // Reset Portfolio Data back to defaults
+        function resetPortfolioData() {
+            if (sessionStorage.getItem('asaduzzaman_admin_auth') !== 'true') {
+                openAdminModal();
+                return;
+            }
+            if (confirm('Are you sure you want to reset all custom edits, photo, and resume uploads back to defaults?')) {
+                localStorage.removeItem('asaduzzaman_portfolio_edits');
+                localStorage.removeItem('asaduzzaman_profile_photo');
+                localStorage.removeItem('asaduzzaman_resume_file');
+                localStorage.removeItem('asaduzzaman_admin_password');
+                location.reload();
+            }
+        }
+
+        // Handle Image Upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoDataUrl = e.target.result;
+                document.getElementById('profileImage').src = photoDataUrl;
+                localStorage.setItem('asaduzzaman_profile_photo', photoDataUrl);
+                showToast('Profile photo updated successfully!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle Resume PDF File Upload
+        function handleResumeUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedResumeData = {
+                    fileName: file.name,
+                    fileData: e.target.result
+                };
+                localStorage.setItem('asaduzzaman_resume_file', JSON.stringify(uploadedResumeData));
+                document.getElementById('resumeBtnText').innerText = 'Download Custom Resume (' + file.name + ')';
+                showToast('Resume uploaded! "Download Resume" button updated.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Download Resume Action
+        function downloadResume() {
+            if (uploadedResumeData && uploadedResumeData.fileData) {
+                const link = document.createElement('a');
+                link.href = uploadedResumeData.fileData;
+                link.download = uploadedResumeData.fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('Downloading uploaded resume file...');
+            } else {
+                showToast('Opening print/PDF view of Resume...');
+                window.print();
+            }
+        }
+
+        // Export Complete Modified HTML File
+        function exportModifiedHTML() {
+            if (sessionStorage.getItem('asaduzzaman_admin_auth') !== 'true') {
+                openAdminModal();
+                return;
+            }
+            if (isEditMode) {
+                toggleEditMode();
+            }
+
+            const fullHTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            downloadAnchor.download = 'Md_Asaduzzaman_Portfolio_Customized.html';
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(url);
+
+            showToast('Portfolio exported as customized HTML file!');
+        }
+
+        // Theme Toggle Handler
+        const themeToggleBtn = document.getElementById('themeToggle');
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Mobile Menu Drawer Handler
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Copy to clipboard helper
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('Copied to clipboard: ' + text);
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-2 border border-slate-700 animate-bounce';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
+
+        // Contact Form Submission Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contactForm').reset();
+            const msg = document.getElementById('formSuccessMessage');
+            msg.classList.remove('hidden');
+            setTimeout(() => {
+                msg.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Interactive Audit Discrepancy Simulator Logic
+        const scenarioSelect = document.getElementById('simScenario');
+        const simVal1 = document.getElementById('simVal1');
+        const simVal2 = document.getElementById('simVal2');
+        const simDocs = document.getElementById('simDocs');
+        const labelVal1 = document.getElementById('labelVal1');
+        const labelVal2 = document.getElementById('labelVal2');
+
+        scenarioSelect.addEventListener('change', () => {
+            if (scenarioSelect.value === 'cf_bill') {
+                labelVal1.innerText = 'Billed Amount (BDT)';
+                labelVal2.innerText = 'Approved SOP Limit (BDT)';
+                simVal1.value = 450000;
+                simVal2.value = 380000;
+            } else if (scenarioSelect.value === 'grpo_mrr') {
+                labelVal1.innerText = 'Challan Qty (Units)';
+                labelVal2.innerText = 'Physical Received Qty (Units)';
+                simVal1.value = 5000;
+                simVal2.value = 4650;
+            } else if (scenarioSelect.value === 'fuel_consumption') {
+                labelVal1.innerText = 'Actual Fuel Consumed (Ltrs)';
+                labelVal2.innerText = 'Standard Benchmark (Ltrs)';
+                simVal1.value = 1200;
+                simVal2.value = 950;
+            }
+            runAuditSimulation();
+        });
+
+        function runAuditSimulation() {
+            const v1 = parseFloat(simVal1.value) || 0;
+            const v2 = parseFloat(simVal2.value) || 0;
+            const diff = Math.max(0, v1 - v2);
+            const docStatus = simDocs.value;
+
+            const badge = document.getElementById('riskBadge');
+            const valElem = document.getElementById('discrepancyVal');
+            const causeElem = document.getElementById('rootCauseText');
+            const recElem = document.getElementById('recommendationText');
+
+            if (scenarioSelect.value === 'cf_bill') {
+                valElem.innerText = 'BDT ' + diff.toLocaleString();
+                if (diff > 50000 || docStatus !== 'complete') {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/20 text-red-400 border border-red-500/30';
+                    badge.innerText = 'HIGH RISK / OVERCHARGE DETECTED';
+                    causeElem.innerText = `Billed claim exceeds contract/SOP threshold by BDT ${diff.toLocaleString()}. ${docStatus !== 'complete' ? 'Documentation incomplete.' : ''}`;
+                    recElem.innerText = 'Flag for audit observation. Withhold approval pending clarification and revised bill submission from C&F agent.';
+                } else {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+                    badge.innerText = 'COMPLIANT / LOW RISK';
+                    causeElem.innerText = 'Invoice parameters fall within normal contract tolerance and documented SOP approval thresholds.';
+                    recElem.innerText = 'Clear for voucher preparation and routine payment processing.';
+                }
+            } else if (scenarioSelect.value === 'grpo_mrr') {
+                valElem.innerText = diff.toLocaleString() + ' Units Shortage';
+                if (diff > 0 || docStatus !== 'complete') {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30';
+                    badge.innerText = 'QUANTITY MISMATCH';
+                    causeElem.innerText = `Physical MRR count reveals a receiving shortage of ${diff} units compared to Supplier Delivery Challan.`;
+                    recElem.innerText = 'Deduct shortage value from supplier debit note. Adjust inventory register to physical count.';
+                } else {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+                    badge.innerText = 'VERIFIED MATCHER';
+                    causeElem.innerText = 'Physical counts and system GRPO line items match delivery challan records 100%.';
+                    recElem.innerText = 'Complete inventory ledger update.';
+                }
+            } else {
+                valElem.innerText = diff.toLocaleString() + ' Ltrs Excess Fuel';
+                if (diff > 100) {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/20 text-red-400 border border-red-500/30';
+                    badge.innerText = 'UTILITY ANOMALY';
+                    causeElem.innerText = `Fuel consumption exceeds machine standard run rates by ${diff} Liters based on operational production output.`;
+                    recElem.innerText = 'Initiate technical audit on generator/boiler efficiency and inspect fuel log integrity.';
+                } else {
+                    badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+                    badge.innerText = 'OPTIMAL YIELD';
+                    causeElem.innerText = 'Utility consumption aligns with standard operational efficiency parameters.';
+                    recElem.innerText = 'Continue monthly log tracking.';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
